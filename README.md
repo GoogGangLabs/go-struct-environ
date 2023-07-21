@@ -73,7 +73,7 @@ func main() {
 
   fmt.Println(envStruct)
 
-  err := environ.Load("./env", &envStruct)
+  err := environ.Load("./.env", &envStruct)
   if err != nil { panic(err) }
 
   fmt.Println(envStruct)
