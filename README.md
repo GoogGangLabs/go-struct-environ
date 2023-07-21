@@ -37,8 +37,6 @@ import (
 func Load(path string, environStruct interface{}) (error)
 ```
 
-### Precautions
-
 <br>
 
 ## Example
