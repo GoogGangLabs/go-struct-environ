@@ -2,8 +2,6 @@
 
 It's a package that helps you set environment variables easily in go.<br>
 
-<br>
-
 It is also fully compatible with the process environment variable (os.Getenv).
 
 <br>
