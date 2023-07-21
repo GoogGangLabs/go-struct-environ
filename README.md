@@ -1,14 +1,10 @@
 ## go-struct-environ
 
----
-
 It's a package that helps you set environment variables easily in go.
 
 <br>
 
 ## Usage
-
----
 
 ### Install Package
 
@@ -46,8 +42,6 @@ func Load(path string, environStruct interface{}) (error)
 <br>
 
 ## Example
-
----
 
 <br>
 
