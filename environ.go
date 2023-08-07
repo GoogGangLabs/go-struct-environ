@@ -27,7 +27,7 @@ func Load(path string, environStruct interface{}) (error) {
 	var isAllowLine bool
 
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := strings.Trim(scanner.Text(), " ")
 
 		isAllowLine = lineBypassRegexp.MatchString(line)
 		if isAllowLine { continue }
