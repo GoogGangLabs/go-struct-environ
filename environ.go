@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -21,15 +22,24 @@ func Load(path string, environStruct interface{}) (error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+	lineBypassRegexp, _ := regexp.Compile(`^[\s]*$|^$|^#`)
+	lineRuleRegexp, _ := regexp.Compile(`^[^=\s]+=[^=\s]+$`)
+	var isAllowLine bool
 
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		isAllowLine = lineBypassRegexp.MatchString(line)
+		if isAllowLine { continue }
+
+		isAllowLine = lineRuleRegexp.MatchString(line)
+		if !isAllowLine { return errors.New("invalid env line") }
+
 		entry := strings.Split(line, "=")
-		if len(entry) != 2 { return errors.New("invalid env line") }
 
 		key, value := entry[0], entry[1]
 		field := structElem.FieldByName(key)
-		if !field.Comparable() { return fmt.Errorf("[%s] does not exist in struct", key) }
+		if !field.Comparable() { continue }
 
 		os.Setenv(key, value)
 		fieldValue := os.Getenv(key)
