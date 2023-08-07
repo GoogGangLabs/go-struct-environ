@@ -11,11 +11,39 @@ import (
 	"strings"
 )
 
-func Load(path string, environStruct interface{}) (error) {
+func getStructReflect(environStruct interface{}) (reflect.Value, error) {
 	structPtr := reflect.ValueOf(environStruct)
-	if structPtr.Kind() != reflect.Ptr { return errors.New("argument must be pointer") }
+	if structPtr.Kind() != reflect.Ptr { return reflect.Value{}, errors.New("argument must be pointer") }
 	structElem := structPtr.Elem()
-	if structElem.Kind() != reflect.Struct { return errors.New("argument's type must be struct") }
+	if structElem.Kind() != reflect.Struct { return reflect.Value{}, errors.New("argument's type must be struct") }
+	return structElem, nil
+}
+
+func LoadFromProcess(environStruct interface{}) (error) {
+	structElem, err := getStructReflect(environStruct)
+	if err != nil { return err }
+
+	for i := 0; i < structElem.NumField(); i++ {
+		key := structElem.Type().Field(i).Name
+		field := structElem.Field(i)
+		fieldValue := os.Getenv(key)
+
+		if field.CanInt() {
+			intValue, err := strconv.ParseInt(fieldValue, 10, 64)
+			if err != nil { return fmt.Errorf("[%s] must be an integer", key) }
+			field.SetInt(intValue)
+		} else {
+			if fieldValue == "" { return fmt.Errorf("[%s] must not be blank", key) }
+			field.SetString(fieldValue)
+		}
+	}
+
+	return nil
+}
+
+func Load(path string, environStruct interface{}) (error) {
+	structElem, err := getStructReflect(environStruct)
+	if err != nil { return err }
 
 	file, err := os.Open(path)
 	if err != nil { return err }
