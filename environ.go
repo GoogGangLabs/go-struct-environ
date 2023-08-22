@@ -19,7 +19,7 @@ func getStructReflect(environStruct interface{}) (reflect.Value, error) {
 	return structElem, nil
 }
 
-func LoadFromProcess(environStruct interface{}) (error) {
+func LoadFromEnvironment(environStruct interface{}) (error) {
 	structElem, err := getStructReflect(environStruct)
 	if err != nil { return err }
 
@@ -41,7 +41,7 @@ func LoadFromProcess(environStruct interface{}) (error) {
 	return nil
 }
 
-func Load(path string, environStruct interface{}) (error) {
+func LoadFromFile(path string, environStruct interface{}) (error) {
 	structElem, err := getStructReflect(environStruct)
 	if err != nil { return err }
 
