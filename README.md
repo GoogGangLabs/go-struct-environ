@@ -75,7 +75,10 @@ func main() {
 
   fmt.Println(envStruct)
 
-  err := environ.Load("./.env", &envStruct)
+  /* Load environment variables from Environment file */
+  err := environ.LoadFromFile("./.env", &envStruct)
+  /* Or load from OS Environment variables */
+  err := environ.LoadFromEnvironment(&envStruct)
   if err != nil { panic(err) }
 
   fmt.Println(envStruct)
